@@ -1,1 +1,12 @@
-/.idea/
+# Maven / Gradle build output
+target/
+*.jar
+*.war
+*.class
+
+# IntelliJ
+.idea/
+*.iml
+
+# Logs
+*.log
