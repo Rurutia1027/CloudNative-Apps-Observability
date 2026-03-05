@@ -7,14 +7,13 @@ scrape_configs:
     static_configs:
       - targets: ['prometheus:9090']
 
-  # Example: scrape Spring Boot microservices running on the same Docker network.
-  # Uncomment and adjust service names/ports if you also run apps via docker-compose.
-  # - job_name: 'spring-microservices'
-  #   metrics_path: /actuator/prometheus
-  #   static_configs:
-  #     - targets:
-  #         - 'customer:8080'
-  #         - 'fraud:8081'
-  #         - 'notification:8082'
-  #         - 'apigw:8083'
+  # Spring Boot microservices (same Docker network as docker-compose.dev.yml)
+  - job_name: 'spring-microservices'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - 'customer:8080'
+          - 'fraud:8081'
+          - 'notification:8082'
+          - 'apigw:8083'
 
