@@ -130,3 +130,99 @@ Supporting patterns: Event Bus / Event Stream , Publish/Subscribe, message-drive
 
 
 Example flow: 
+```
+Create Order → Reserve Product → Process Payment → Approve Order
+```
+
+On failure, compensations (e.g. cancel reservation, reject order, rollback local changes) keep the system eventually consistent. 
+
+
+---
+
+## Observability: Trace, Log, Metrics
+
+Observability is treated as a first-class concern: **trace**, **log**, and **metrics** are designed into the system and fused with event-driven flows and business operations. 
+
+| Pillar | Role in EDA / Microservices |
+|--------|-----------------------------|
+| **Trace** | Follow a request or business flow across services and message hops; correlate event publishing and consumption with spans. |
+| **Log** | Structured logs (with trace/span IDs) for debugging, audit, and understanding event flow and failures. |
+| **Metrics** | Throughput, latency, error rates, queue depths, and business metrics (e.g. orders/sec, saga completion rate). |
+
+**Integration with the business**
+
+- **Trace:** End-to-end visibility for order creation, payment, and saga steps; identify slow or failing services and queues. 
+- **Log:** Search by `trace_id` or `correlation_id` to see the full path of an event and related logs. 
+- **Metrics:** Dashboards and alerts on saga success/failure, event log, and consumer health to support SLOs and operations. 
+
+Planned or reference tooling (to be refined in experiments): 
+- **Tracing**: OpenTelemetry, Jaeger, or vendor equivalents; propagation across HTTP and messaging. 
+- **Logging**: Structured JSON logs; aggregations (e.g., Loki, Elasticsearch) and correlation with traces. 
+- **Metrics**: Promethus + Grafana (or cloud-native equivalents): exportersand custom metrics for events and sagas. 
+
+
+---
+
+## Cloud Native Deployment 
+
+```
+CloudNative-Apps-Observability/
+│
+├── services/
+│   ├── order-service/
+│   ├── product-service/
+│   └── payment-service/
+│
+├── infrastructure/
+│   ├── axon-server/
+│   ├── kafka/
+│   └── docker/
+│
+├── architecture/
+│   ├── eda-patterns/
+│   ├── messaging-patterns/
+│   ├── saga/
+│   ├── cqrs/
+│   └── event-sourcing/
+│
+├── observability/
+│   ├── trace/
+│   ├── log/
+│   └── metrics/
+│
+├── docs/
+│   ├── architecture-notes/
+│   ├── event-flows/
+│   └── saga-workflows/
+│
+└── experiments/
+    ├── axon-example/
+    └── event-driven-demo/
+```
+
+This separates **services**, **infrastructure**, **architecture patterns**, **observability**, and **docs/experiments**, so the repo works as both a learning lab and a knowledge base. 
+
+---
+
+## Learning Goals 
+- Understand event-driven microservices communication and classic EDA patterns. 
+- Explore CQRS and event sourcing (e.g., with Axon).
+- Experiment with Saga (choregraphy vs orchestration) for distributed transactions. 
+- Learn patterns for eventually consistent systems. 
+- **Design and implement observability**: trace, log, metrics, and their fusion with event flows and business scenarios. 
+- Study cloud-native deployment and service orchestration. 
+- Compare messaging platforms and event patterns. 
+
+
+---
+
+## Future Experiments 
+- Integrate **Kafka** for event streaming. 
+- Compare **choregraphy vs orchestration** Sagas with concrete flows. 
+- Snapshotting and event replay optimizations. 
+- **Kubernetes deployments and Helm charts** (apps + observability stack).
+- **Observability:** OpenTelemetry instrumentation, trace propagation across events, structured logging, Prometheus metrics and Grafana dashboards. 
+- Idempotency and retry strategies in event-driven consumers. 
+
+---
+
