@@ -5,13 +5,15 @@ It focuses on breaking down real-world distributed system patterns into practica
 ## Architecture Diagram 
 ![](./docs/architecture-data-flow.png)
 
+## Module Dependencies 
+![](./docs/dependency-graph.png)
+
 ## Overview 
 - Core Focus: EDA design principles and production-grade patterns
 - Demo Domain: Food Ordering System 
 - Architecture Style: Microservices + DDD + Hexagonal Architecture 
 - Messaging Backbone: Kafka 
 - Deployment: Kubernetes (GKE-ready)
-
 
 ## System Design 
 ### Services 
