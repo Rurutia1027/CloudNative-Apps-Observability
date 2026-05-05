@@ -16,6 +16,8 @@ It focuses on breaking down real-world distributed system patterns into practica
 ## System Design 
 ### Services 
 #### Order Service 
+
+![](./docs/order-service-clean-architecture.png)
 - Acts as the Saga Orchestrator 
 - Manages order lifecycle and saga state transitions 
 
