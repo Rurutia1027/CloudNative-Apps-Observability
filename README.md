@@ -102,6 +102,8 @@ Guarantees
 
 
 
-
+## References
+- [Food Ordering Syste](https://github.com/agelenler/food-ordering-system)
+- [Event-Driven-Microservices-Advanced](https://github.com/Armando1514/Event-Driven-Microservices-Advanced)
 
 
