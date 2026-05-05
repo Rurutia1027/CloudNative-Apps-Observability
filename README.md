@@ -2,6 +2,9 @@
 This repository demonstrates **Event-Driven Architecture (EDA)** from a learner's perspective, using a **Food Ordering System** as the core example. 
 It focuses on breaking down real-world distributed system patterns into practical, observable components. 
 
+## Architecture Diagram 
+![](./docs/architecture-data-flow.png)
+
 ## Overview 
 - Core Focus: EDA design principles and production-grade patterns
 - Demo Domain: Food Ordering System 
