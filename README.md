@@ -37,7 +37,7 @@ It focuses on breaking down real-world distributed system patterns into practica
 
 ## Architecture Pattern 
 ### Hexagonal (Clean) Architecture
-Eachservice follows **Ports** & **Adapters**
+Each service follows **Ports** & **Adapters**
 - Primary Adapters: Business logic (application/ domain layer)
 - Secondary Adapters:
 > Messaging (Kafka producers/consumers)
@@ -114,7 +114,7 @@ Guarantees
 
 
 ## References
-- [Food Ordering Syste](https://github.com/agelenler/food-ordering-system)
+- [Food Ordering System](https://github.com/agelenler/food-ordering-system)
 - [Event-Driven-Microservices-Advanced](https://github.com/Armando1514/Event-Driven-Microservices-Advanced)
 
 
