@@ -5,6 +5,9 @@ It focuses on breaking down real-world distributed system patterns into practica
 ## Architecture Diagram 
 ![](./docs/architecture-data-flow.png)
 
+## Module Dependencies 
+![](./docs/dependency-graph.png)
+
 ## Overview 
 - Core Focus: EDA design principles and production-grade patterns
 - Demo Domain: Food Ordering System 
@@ -12,12 +15,15 @@ It focuses on breaking down real-world distributed system patterns into practica
 - Messaging Backbone: Kafka 
 - Deployment: Kubernetes (GKE-ready)
 
-
 ## System Design 
 ### Services 
 #### Order Service 
-
+- 
+- Order Service Clean Architecture 
 ![](./docs/order-service-clean-architecture.png)
+
+- Order Domain Model Defintion  
+![](./docs/order-domain-model-definition.png)
 - Acts as the Saga Orchestrator 
 - Manages order lifecycle and saga state transitions 
 
@@ -31,7 +37,7 @@ It focuses on breaking down real-world distributed system patterns into practica
 
 ## Architecture Pattern 
 ### Hexagonal (Clean) Architecture
-Eachservice follows **Ports** & **Adapters**
+Each service follows **Ports** & **Adapters**
 - Primary Adapters: Business logic (application/ domain layer)
 - Secondary Adapters:
 > Messaging (Kafka producers/consumers)
@@ -108,7 +114,7 @@ Guarantees
 
 
 ## References
-- [Food Ordering Syste](https://github.com/agelenler/food-ordering-system)
+- [Food Ordering System](https://github.com/agelenler/food-ordering-system)
 - [Event-Driven-Microservices-Advanced](https://github.com/Armando1514/Event-Driven-Microservices-Advanced)
 
 
