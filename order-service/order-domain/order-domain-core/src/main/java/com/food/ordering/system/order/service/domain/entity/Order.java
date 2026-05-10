@@ -11,6 +11,7 @@ import com.food.ordering.system.order.service.domain.valueobject.OrderItemId;
 import com.food.ordering.system.order.service.domain.valueobject.StreetAddress;
 import com.food.ordering.system.order.service.domain.valueobject.TrackingId;
 
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -106,6 +107,16 @@ public class Order extends AggregateRoot<OrderId> {
             validateItemPrice(orderItem);
             return orderItem.getSubTotal();
         }).reduce(Money.ZERO, Money::add);
+        if (price.getAmount().compareTo(orderItemsTotal.getAmount()) != 0) {
+            throw new OrderDomainException(
+                    "Total price: " + formatMoneyAmount(price) +
+                            " is not equal to Order items total: " +
+                            formatMoneyAmount(orderItemsTotal) + "!");
+        }
+    }
+
+    private static String formatMoneyAmount(Money money) {
+        return money.getAmount().setScale(2, RoundingMode.HALF_EVEN).toPlainString();
     }
 
     private void validateItemPrice(OrderItem orderItem) {
