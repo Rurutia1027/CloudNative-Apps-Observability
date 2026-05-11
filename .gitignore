@@ -10,3 +10,5 @@ target/
 
 # Logs
 *.log
+/infrastructure/docker-compose/.env
+/infrastructure/docker-compose/volumes/
