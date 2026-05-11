@@ -43,12 +43,15 @@ public class OrderCreateHelper {
 
     @Transactional
     public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand) {
-        checkCustomer(createOrderCommand.getCustomerId());
-        Restaurant restaurant = checkRestaurant(createOrderCommand);
+        checkCustomer(createOrderCommand.getCustomerId()); // --> remote call --> remote
+        // customer domain applicaiton service query customer db
+        Restaurant restaurant = checkRestaurant(createOrderCommand); // --> remote
+        // restaurant domain endpoint to query the data by providing the specific
+        // restarutant id
         Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
         OrderCreatedEvent orderCreatedEvent =
                 orderDomainService.validateAndInitiateOrder(order, restaurant);
-        Order orderResult = saveOrder(order);
+        Order orderResult = saveOrder(order); // --. local database
         log.info("Order is created with id: {}", orderCreatedEvent.getOrder().getId().getValue());
         return orderCreatedEvent;
     }
