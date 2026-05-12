@@ -8,8 +8,6 @@
     </parent>
     <artifactId>infrastructure</artifactId>
     <packaging>pom</packaging>
-    <name>Archetype - infrastructure</name>
-    <url>http://maven.apache.org</url>
     <modules>
         <module>kafka</module>
     </modules>
