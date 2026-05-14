@@ -21,6 +21,4 @@ import java.util.UUID;
 public class CustomerEntity {
     @Id
     private UUID id;
-
-
 }

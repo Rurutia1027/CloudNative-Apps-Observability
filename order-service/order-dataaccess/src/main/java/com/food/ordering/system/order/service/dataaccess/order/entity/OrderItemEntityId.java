@@ -18,6 +18,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class OrderItemEntityId implements Serializable {
     private Long id;
+    // todo: figure out whether orderId/uuid is better than OrderEntity instance 
     private OrderEntity order;
 
     @Override
