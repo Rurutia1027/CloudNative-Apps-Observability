@@ -1,3 +1,8 @@
+# Build and test the multi-module Maven project on every push and pull request.
+# `mvn verify` runs the full lifecycle including Surefire unit tests (`**/src/test/java`).
+# Avro: `kafka-model` binds `avro-maven-plugin` to `generate-sources`, which runs before
+# `compile` — same reactor as other modules, so `install` is not required for generated classes.
+
 name: Maven CI
 
 on:
@@ -14,12 +19,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-#      - name: Set up JDK 17
-#        uses: actions/setup-java@v4
-#        with:
-#          distribution: temurin
-#          java-version: 17
-#          cache: maven
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
 
-#      - name: Build with Maven
-#        run: mvn -B clean package
+      - name: Build with Maven
+        run: mvn -B -ntp verify
