@@ -1,7 +1,16 @@
+# Local Postgres for Udemy / cloud-native-eda-lab progress: customer + order schemas only.
+# Init runs once on empty volume (docker-entrypoint-initdb.d).
+#
+# Re-apply SQL after edits: docker compose -f postgres.yml down -v && docker compose -f postgres.yml up -d
+#
+# Run customer-service and order-service with profile `docker` so classpath
+# init-schema / init-data is not re-applied every boot (see application-docker.yml).
+
 services:
   postgres:
     image: postgres:16-alpine
     hostname: postgres
+    restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
@@ -10,12 +19,13 @@ services:
       POSTGRES_DB: postgres
     volumes:
       - "./volumes/postgres/data:/var/lib/postgresql/data"
+      - "./postgres/init:/docker-entrypoint-initdb.d:ro"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 15s
     networks:
       - food-ordering-system
 
