@@ -1,6 +1,5 @@
 package com.food.ordering.system.payment.service.domain.entity;
 
-import com.food.ordering.system.domain.constant.DomainConstants;
 import com.food.ordering.system.domain.entity.AggregateRoot;
 import com.food.ordering.system.domain.valueobject.CustomerId;
 import com.food.ordering.system.domain.valueobject.Money;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Payment extends AggregateRoot<PaymentId> {
+
     private final OrderId orderId;
     private final CustomerId customerId;
     private final Money price;
@@ -23,7 +23,7 @@ public class Payment extends AggregateRoot<PaymentId> {
 
     public void initializePayment() {
         setId(new PaymentId(UUID.randomUUID()));
-        createdAt = ZonedDateTime.now(ZoneId.of(DomainConstants.UTC));
+        createdAt = ZonedDateTime.now(ZoneId.of("UTC"));
     }
 
     public void validatePayment(List<String> failureMessages) {
@@ -43,6 +43,10 @@ public class Payment extends AggregateRoot<PaymentId> {
         price = builder.price;
         paymentStatus = builder.paymentStatus;
         createdAt = builder.createdAt;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
 
@@ -68,20 +72,32 @@ public class Payment extends AggregateRoot<PaymentId> {
 
     public static final class Builder {
         private PaymentId paymentId;
-        private final OrderId orderId;
-        private final CustomerId customerId;
-        private final Money price;
+        private OrderId orderId;
+        private CustomerId customerId;
+        private Money price;
         private PaymentStatus paymentStatus;
         private ZonedDateTime createdAt;
 
-        public Builder(OrderId orderId, CustomerId customerId, Money price) {
-            this.orderId = orderId;
-            this.customerId = customerId;
-            this.price = price;
+        private Builder() {
         }
 
         public Builder paymentId(PaymentId val) {
             paymentId = val;
+            return this;
+        }
+
+        public Builder orderId(OrderId val) {
+            orderId = val;
+            return this;
+        }
+
+        public Builder customerId(CustomerId val) {
+            customerId = val;
+            return this;
+        }
+
+        public Builder price(Money val) {
+            price = val;
             return this;
         }
 
