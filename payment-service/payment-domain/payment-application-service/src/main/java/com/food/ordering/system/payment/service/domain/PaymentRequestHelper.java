@@ -2,7 +2,7 @@ package com.food.ordering.system.payment.service.domain;
 
 import com.food.ordering.system.domain.valueobject.CustomerId;
 import com.food.ordering.system.payment.service.domain.dto.PaymentRequest;
-import com.food.ordering.system.payment.service.domain.entity.CreditEntity;
+import com.food.ordering.system.payment.service.domain.entity.CreditEntry;
 import com.food.ordering.system.payment.service.domain.entity.CreditHistory;
 import com.food.ordering.system.payment.service.domain.entity.Payment;
 import com.food.ordering.system.payment.service.domain.event.PaymentEvent;
@@ -59,16 +59,16 @@ public class PaymentRequestHelper {
         log.info("Received payment complete event for order id: {}",
                 paymentRequest.getOrderId());
         Payment payment = paymentDataMapper.paymentRequestModelToPayment(paymentRequest);
-        CreditEntity creditEntity = getCreditEntry(payment.getCustomerId());
+        CreditEntry creditEntry = getCreditEntry(payment.getCustomerId());
         List<CreditHistory> creditHistories = getCreditHistory(payment.getCustomerId());
 
         List<String> failureMessages = new ArrayList<>();
         PaymentEvent paymentEvent = paymentDomainService.validateAndInitiatePayment(
-                payment, creditEntity, creditHistories, failureMessages,
+                payment, creditEntry, creditHistories, failureMessages,
                 paymentCompletedMessagePublisher,
                 paymentFailedMessagePublisher);
 
-        persistDbObjects(payment, creditEntity, creditHistories, failureMessages);
+        persistDbObjects(payment, creditEntry, creditHistories, failureMessages);
         return paymentEvent;
     }
 
@@ -85,20 +85,20 @@ public class PaymentRequestHelper {
             throw new PaymentApplicationServiceException("Payment with order id: " + paymentRequest.getOrderId() + " could not be found!");
         }
         Payment payment = paymentResponse.get();
-        CreditEntity creditEntity = getCreditEntry(payment.getCustomerId());
+        CreditEntry creditEntry = getCreditEntry(payment.getCustomerId());
         List<CreditHistory> creditHistories = getCreditHistory(payment.getCustomerId());
         List<String> failureMessages = new ArrayList<>();
 
         PaymentEvent paymentEvent = paymentDomainService.validateAndCancelPayment(payment,
-                creditEntity, creditHistories, failureMessages,
+                creditEntry, creditHistories, failureMessages,
                 paymentCancelledEventDomainEventPublisher, paymentFailedMessagePublisher);
-        persistDbObjects(payment, creditEntity, creditHistories, failureMessages);
+        persistDbObjects(payment, creditEntry, creditHistories, failureMessages);
         return paymentEvent;
     }
 
 
-    private CreditEntity getCreditEntry(CustomerId customerId) {
-        Optional<CreditEntity> creditEntity =
+    private CreditEntry getCreditEntry(CustomerId customerId) {
+        Optional<CreditEntry> creditEntity =
                 creditEntryRepository.findByCustomerId(customerId);
         if (creditEntity.isEmpty()) {
             log.error("Could not find credit entry for customer: {}", customerId.getValue());
@@ -120,12 +120,12 @@ public class PaymentRequestHelper {
     }
 
     private void persistDbObjects(Payment payment,
-                                  CreditEntity creditEntity,
+                                  CreditEntry creditEntry,
                                   List<CreditHistory> creditHistories,
                                   List<String> failureMessages) {
         paymentRepository.save(payment);
         if (failureMessages.isEmpty()) {
-            creditEntryRepository.save(creditEntity);
+            creditEntryRepository.save(creditEntry);
             creditHistoryRepository.save(creditHistories.get(creditHistories.size() - 1));
         }
     }

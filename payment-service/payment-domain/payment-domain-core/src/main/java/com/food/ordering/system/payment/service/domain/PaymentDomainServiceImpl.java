@@ -3,7 +3,7 @@ package com.food.ordering.system.payment.service.domain;
 import com.food.ordering.system.domain.event.publisher.DomainEventPublisher;
 import com.food.ordering.system.domain.valueobject.Money;
 import com.food.ordering.system.domain.valueobject.PaymentStatus;
-import com.food.ordering.system.payment.service.domain.entity.CreditEntity;
+import com.food.ordering.system.payment.service.domain.entity.CreditEntry;
 import com.food.ordering.system.payment.service.domain.entity.CreditHistory;
 import com.food.ordering.system.payment.service.domain.entity.Payment;
 import com.food.ordering.system.payment.service.domain.event.PaymentCancelledEvent;
@@ -25,7 +25,7 @@ import static com.food.ordering.system.domain.constant.DomainConstants.UTC;
 public class PaymentDomainServiceImpl implements PaymentDomainService {
     @Override
     public PaymentEvent validateAndInitiatePayment(Payment payment,
-                                                   CreditEntity creditEntity,
+                                                   CreditEntry creditEntry,
                                                    List<CreditHistory> creditHistories,
                                                    List<String> failureMessages,
                                                    DomainEventPublisher<PaymentCompletedEvent>
@@ -34,10 +34,10 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
                                                                paymentFailedEventDomainPublisher) {
         payment.validatePayment(failureMessages);
         payment.initializePayment();
-        validateCreditEntry(payment, creditEntity, failureMessages);
-        subtractCreditEntry(payment, creditEntity);
+        validateCreditEntry(payment, creditEntry, failureMessages);
+        subtractCreditEntry(payment, creditEntry);
         updateCreditHistory(payment, creditHistories, TransactionType.DEBIT);
-        validateCreditHistory(creditEntity, creditHistories, failureMessages);
+        validateCreditHistory(creditEntry, creditHistories, failureMessages);
 
         if (failureMessages.isEmpty()) {
             log.info("Payment is initiated for order id: {}", payment.getOrderId().getValue());
@@ -56,7 +56,7 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
 
     @Override
     public PaymentEvent validateAndCancelPayment(Payment payment,
-                                                 CreditEntity creditEntity,
+                                                 CreditEntry creditEntry,
                                                  List<CreditHistory> creditHistories,
                                                  List<String> failureMessages,
                                                  DomainEventPublisher<PaymentCancelledEvent>
@@ -64,7 +64,7 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
                                                  DomainEventPublisher<PaymentFailedEvent>
                                                              paymentFailedEventDomainEventPublisher) {
         payment.validatePayment(failureMessages);
-        addCreditEntry(payment, creditEntity);
+        addCreditEntry(payment, creditEntry);
         updateCreditHistory(payment, creditHistories, TransactionType.CREDIT);
         if (failureMessages.isEmpty()) {
             log.info("Payment is cancelled for order id: {}", payment.getOrderId().getValue());
@@ -80,13 +80,13 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
         }
     }
 
-    private void addCreditEntry(Payment payment, CreditEntity creditEntity) {
-        creditEntity.addCreditAmount(payment.getPrice());
+    private void addCreditEntry(Payment payment, CreditEntry creditEntry) {
+        creditEntry.addCreditAmount(payment.getPrice());
     }
 
-    private void validateCreditEntry(Payment payment, CreditEntity creditEntity,
+    private void validateCreditEntry(Payment payment, CreditEntry creditEntry,
                                      List<String> failureMessages) {
-        if (payment.getPrice().isGreaterThan(creditEntity.getTotalCreditAmount())) {
+        if (payment.getPrice().isGreaterThan(creditEntry.getTotalCreditAmount())) {
             log.error("Consumer with id: {} doesn't have enough credit for payment!",
                     payment.getCustomerId().getValue());
             failureMessages.add("Customer with id= " + payment.getCustomerId().getValue()
@@ -94,8 +94,8 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
         }
     }
 
-    private void subtractCreditEntry(Payment payment, CreditEntity creditEntity) {
-        creditEntity.subtractCreditAmount(payment.getPrice());
+    private void subtractCreditEntry(Payment payment, CreditEntry creditEntry) {
+        creditEntry.subtractCreditAmount(payment.getPrice());
     }
 
     private void updateCreditHistory(Payment payment, List<CreditHistory> creditHistories,
@@ -109,7 +109,7 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
     }
 
 
-    private void validateCreditHistory(CreditEntity creditEntity,
+    private void validateCreditHistory(CreditEntry creditEntry,
                                        List<CreditHistory> creditHistories,
                                        List<String> failureMessages) {
         Money totalCreditHistory = getTotalHistoryAmount(creditHistories, TransactionType.CREDIT);
@@ -117,16 +117,16 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
 
         if (totalDebitHistory.isGreaterThan(totalCreditHistory)) {
             log.error("Customer with id: {} doesn't have enough credit according to credit " +
-                    "history", creditEntity.getCustomerId().getValue());
-            failureMessages.add("Customer with id=" + creditEntity.getCustomerId().getValue() +
+                    "history", creditEntry.getCustomerId().getValue());
+            failureMessages.add("Customer with id=" + creditEntry.getCustomerId().getValue() +
                     " doesn't have enough credit according to credit history!");
         }
 
-        if (!creditEntity.getTotalCreditAmount().equals(totalCreditHistory.subtract(totalDebitHistory))) {
+        if (!creditEntry.getTotalCreditAmount().equals(totalCreditHistory.subtract(totalDebitHistory))) {
             log.error("Credit history total is not equal to current credit for customer id: " +
-                    "{}!", creditEntity.getCustomerId().getValue());
+                    "{}!", creditEntry.getCustomerId().getValue());
             failureMessages.add("Credit history total is not equal to current credit for " +
-                    "customer id: " + creditEntity.getCustomerId().getValue() + "!");
+                    "customer id: " + creditEntry.getCustomerId().getValue() + "!");
         }
     }
 
