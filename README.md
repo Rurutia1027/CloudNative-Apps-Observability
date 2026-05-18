@@ -1,4 +1,4 @@
-# Event-Driven Architecture in Action 
+# Event-Driven Architecture in Action | [![Maven CI](https://github.com/Rurutia1027/cloud-native-eda-lab/actions/workflows/build.yml/badge.svg)](https://github.com/Rurutia1027/cloud-native-eda-lab/actions/workflows/build.yml) 
 This repository demonstrates **Event-Driven Architecture (EDA)** from a learner's perspective, using a **Food Ordering System** as the core example. 
 It focuses on breaking down real-world distributed system patterns into practical, observable components. 
 
