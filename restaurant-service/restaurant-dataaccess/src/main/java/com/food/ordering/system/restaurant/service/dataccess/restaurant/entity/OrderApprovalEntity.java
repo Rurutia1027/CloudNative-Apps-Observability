@@ -1,4 +1,4 @@
-package com.food.ordering.system.restaurant.service.dataaccess.restaurant.entity;
+package com.food.ordering.system.restaurant.service.dataccess.restaurant.entity;
 
 import com.food.ordering.system.domain.valueobject.OrderApprovalStatus;
 import lombok.AllArgsConstructor;
