@@ -6,7 +6,7 @@
         <artifactId>restaurant-service</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>restaurant-dataccess</artifactId>
+    <artifactId>restaurant-dataaccess</artifactId>
 
     <dependencies>
         <dependency>

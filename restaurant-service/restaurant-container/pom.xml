@@ -15,7 +15,7 @@
         </dependency>
         <dependency>
             <groupId>com.food.ordering.system</groupId>
-            <artifactId>restaurant-dataccess</artifactId>
+            <artifactId>restaurant-dataaccess</artifactId>
         </dependency>
     </dependencies>
 </project>
