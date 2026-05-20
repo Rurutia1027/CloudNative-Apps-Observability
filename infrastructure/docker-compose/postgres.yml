@@ -1,10 +1,7 @@
-# Local Postgres for Udemy / cloud-native-eda-lab progress: customer + order schemas only.
-# Init runs once on empty volume (docker-entrypoint-initdb.d).
+# All service schemas + seed data on first Postgres start (empty volume only).
+# Re-init: docker compose -f postgres.yml down -v && docker compose -f postgres.yml up -d
 #
-# Re-apply SQL after edits: docker compose -f postgres.yml down -v && docker compose -f postgres.yml up -d
-#
-# Run customer-service and order-service with profile `docker` so classpath
-# init-schema / init-data is not re-applied every boot (see application-docker.yml).
+# Run microservices with: export SPRING_PROFILES_ACTIVE=docker
 
 services:
   postgres:
@@ -25,7 +22,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 15s
+      start_period: 20s
     networks:
       - food-ordering-system
 

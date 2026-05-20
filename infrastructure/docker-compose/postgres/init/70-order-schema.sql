@@ -1,4 +1,3 @@
--- Synced from: order-service/order-container/src/main/resources/init-schema.sql
 DROP SCHEMA IF EXISTS "order" CASCADE;
 
 CREATE SCHEMA "order";

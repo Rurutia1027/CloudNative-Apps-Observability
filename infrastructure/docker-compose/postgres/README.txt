@@ -1,17 +1,26 @@
-cloud-native-eda-lab — Docker Postgres (customer + order only)
-==============================================================
+cloud-native-eda-lab — Postgres Docker init (all services)
+==========================================================
 
-Scripts (run in name order on FIRST start of an empty data volume):
+Scripts run in filename order on FIRST start only (empty ./volumes/postgres/data).
 
-  10-customer-schema.sql  — from customer-service/src/main/resources/init-schema.sql
-  20-customer-seed.sql    — from customer-service/src/main/resources/init-data.sql
-  30-order-schema.sql     — from order-service/order-container/src/main/resources/init-schema.sql
+  10-customer-schema.sql
+  15-customer-seed.sql      (IDs aligned with payment + order tests)
+  30-restaurant-schema.sql  (creates shared public.outbox_status)
+  40-restaurant-seed.sql
+  50-payment-schema.sql     (no duplicate outbox_status)
+  60-payment-seed.sql
+  70-order-schema.sql
 
-When this Postgres is used locally:
+Source of truth for edits: update matching file here, then sync
+  *-service/**/src/main/resources/init-schema.sql | init-data.sql as backup.
 
+Start:
+  cd infrastructure/docker-compose
+  docker compose -f postgres.yml up -d
+
+Apps:
   export SPRING_PROFILES_ACTIVE=docker
 
-  - customer-service loads application-docker.yml (disables classpath schema + data init).
-  - order-service loads application-docker.yml (ready for when you add schema init to application.yaml).
-
-If you change init-schema.sql or init-data.sql in the repo, update the matching file under postgres/init/.
+Re-apply SQL after changes:
+  docker compose -f postgres.yml down -v
+  docker compose -f postgres.yml up -d
