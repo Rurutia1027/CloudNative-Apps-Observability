@@ -1,10 +1,10 @@
 services:
   init-kafka:
     image: confluentinc/cp-kafka:${KAFKA_VERSION}
-    depends_on:
-      - kafka-broker-1
-      - kafka-broker-2
-      - kafka-broker-3
+#    depends_on:
+#      - kafka-broker-1
+#      - kafka-broker-2
+#      - kafka-broker-3
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
