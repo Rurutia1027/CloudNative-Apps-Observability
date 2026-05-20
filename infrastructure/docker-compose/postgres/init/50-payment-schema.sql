@@ -1,5 +1,3 @@
--- Backup copy. Canonical local DB init: infrastructure/docker-compose/postgres/init/
--- (When run alone, creates outbox_status; in Docker init, type is created in restaurant script.)
 DROP SCHEMA IF EXISTS payment CASCADE;
 
 CREATE SCHEMA payment;
@@ -48,8 +46,7 @@ CREATE TABLE "payment".credit_history
     CONSTRAINT credit_history_pkey PRIMARY KEY (id)
 );
 
-DROP TYPE IF EXISTS outbox_status;
-CREATE TYPE outbox_status AS ENUM ('STARTED', 'COMPLETED', 'FAILED');
+-- public.outbox_status created in 30-restaurant-schema.sql
 
 DROP TABLE IF EXISTS "payment".order_outbox CASCADE;
 

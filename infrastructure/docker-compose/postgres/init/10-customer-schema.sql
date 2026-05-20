@@ -1,4 +1,3 @@
--- Synced from: customer-service/src/main/resources/init-schema.sql
 DROP SCHEMA IF EXISTS customer CASCADE;
 CREATE SCHEMA customer;
 

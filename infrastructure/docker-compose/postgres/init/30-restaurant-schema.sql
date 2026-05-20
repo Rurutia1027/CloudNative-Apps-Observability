@@ -1,4 +1,3 @@
--- Backup copy. Canonical local DB init: infrastructure/docker-compose/postgres/init/
 DROP SCHEMA IF EXISTS restaurant CASCADE;
 
 CREATE SCHEMA restaurant;

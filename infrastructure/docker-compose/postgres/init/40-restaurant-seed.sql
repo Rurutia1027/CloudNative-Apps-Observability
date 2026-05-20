@@ -1,4 +1,3 @@
--- Backup copy. Canonical local DB init: infrastructure/docker-compose/postgres/init/
 INSERT INTO restaurant.restaurants(id, name, active)
 VALUES ('d215b5f8-0249-4dc5-89a3-51fd148cfb45', 'restaurant_1', TRUE);
 INSERT INTO restaurant.restaurants(id, name, active)
@@ -25,3 +24,5 @@ VALUES ('d215b5f8-0249-4dc5-89a3-51fd148cfb53', 'd215b5f8-0249-4dc5-89a3-51fd148
 INSERT INTO restaurant.restaurant_products(id, restaurant_id, product_id)
 VALUES ('d215b5f8-0249-4dc5-89a3-51fd148cfb54', 'd215b5f8-0249-4dc5-89a3-51fd148cfb46',
         'd215b5f8-0249-4dc5-89a3-51fd148cfb50');
+
+REFRESH MATERIALIZED VIEW restaurant.order_restaurant_m_view;
