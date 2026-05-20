@@ -1,3 +1,4 @@
+-- Backup copy. Canonical local DB init: infrastructure/docker-compose/postgres/init/
 INSERT INTO restaurant.restaurants(id, name, active)
 VALUES ('d215b5f8-0249-4dc5-89a3-51fd148cfb45', 'restaurant_1', TRUE);
 INSERT INTO restaurant.restaurants(id, name, active)

@@ -1,3 +1,5 @@
+-- Backup copy. Canonical local DB init: infrastructure/docker-compose/postgres/init/
+-- (When run alone, creates outbox_status; in Docker init, type is created in restaurant script.)
 DROP SCHEMA IF EXISTS payment CASCADE;
 
 CREATE SCHEMA payment;

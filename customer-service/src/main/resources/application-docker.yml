@@ -1,0 +1,4 @@
+# DB provisioned by infrastructure/docker-compose/postgres/init/
+spring:
+  datasource:
+    initialization-mode: never
