@@ -27,3 +27,7 @@ curl -sS -X POST 'http://localhost:18081/orders' \
     }
   ]
 }'
+
+
+
+#{"orderTrackingId":"c79ad5c6-df6e-4674-a827-e80cf36d53ab","orderStatus":"PENDING","message":"Order Created Successfully"}%
