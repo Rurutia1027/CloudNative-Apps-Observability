@@ -27,16 +27,16 @@ spring:
 
 # Must be root-level: @ConfigurationProperties(prefix = "kafka-config") — not spring.kafka-config
 kafka-config:
-  bootstrap-servers: localhost:19092,localhost:29092,localhost:39092
+  bootstrap-servers: localhost:19092
   schema-registry-url-key: schema.registry.url
   schema-registry-url: http://localhost:8081
   num-of-partitions: 3
-  replication-factor: 3
+  replication-factor: 1
 
 kafka-producer-config:
   key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
   value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
-  compression-type: snappy
+  compression-type: none
   acks: all
   batch-size: 16384
   batch-size-boost-factor: 100
