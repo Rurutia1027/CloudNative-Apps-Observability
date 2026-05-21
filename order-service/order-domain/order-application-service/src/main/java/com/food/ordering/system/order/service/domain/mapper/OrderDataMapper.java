@@ -35,7 +35,7 @@ public class OrderDataMapper {
 
     public CreateOrderResponse orderToCreateOrderResponse(Order order, String message) {
         return CreateOrderResponse.builder()
-                .orderTrackingId(order.getRestaurantId().getValue())
+                .orderTrackingId(order.getTrackingId().getValue())
                 .message(message)
                 .orderStatus(order.getOrderStatus())
                 .build();
