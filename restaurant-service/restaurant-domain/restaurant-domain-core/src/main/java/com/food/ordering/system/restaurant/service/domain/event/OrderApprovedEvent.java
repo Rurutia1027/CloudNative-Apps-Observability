@@ -18,9 +18,4 @@ public class OrderApprovedEvent extends OrderApprovalEvent {
         super(orderApproval, restaurantId, failureMessages, createdAt);
         this.orderApprovedEventDomainEventPublisher = orderApprovedEventDomainEventPublisher;
     }
-
-    @Override
-    public void fire() {
-        orderApprovedEventDomainEventPublisher.publish(this);
-    }
 }
