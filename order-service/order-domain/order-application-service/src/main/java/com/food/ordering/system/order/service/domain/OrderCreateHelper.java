@@ -49,8 +49,8 @@ public class OrderCreateHelper {
         // restarutant id
         Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
         OrderCreatedEvent orderCreatedEvent =
-                orderDomainService.validateAndInitiateOrder(order, restaurant, );
-        Order orderResult = saveOrder(order); // --. local database
+                orderDomainService.validateAndInitiateOrder(order, restaurant);
+        Order orderResult = saveOrder(order); // -- local database
         log.info("Order is created with id: {}", orderCreatedEvent.getOrder().getId().getValue());
         return orderCreatedEvent;
     }

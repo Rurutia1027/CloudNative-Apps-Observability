@@ -1,6 +1,5 @@
 package com.food.ordering.system.order.service.domain;
 
-import com.food.ordering.system.domain.event.publisher.DomainEventPublisher;
 import com.food.ordering.system.order.service.domain.entity.Order;
 import com.food.ordering.system.order.service.domain.entity.Product;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
@@ -42,13 +41,10 @@ public class OrderDomainServiceImpl implements OrderDomainService {
     }
 
     @Override
-    public OrderCancelledEvent cancelOrderPayment(Order order, List<String> failureMessage,
-                                                  DomainEventPublisher<OrderCancelledEvent>
-                                                          orderCancelledEventDomainEventPublisher) {
+    public OrderCancelledEvent cancelOrderPayment(Order order, List<String> failureMessage) {
         order.initCancel(failureMessage);
         log.info("Order payment is cancelling for order id: {}", order.getId().getValue());
-        return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(UTC)),
-                orderCancelledEventDomainEventPublisher);
+        return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     @Override
