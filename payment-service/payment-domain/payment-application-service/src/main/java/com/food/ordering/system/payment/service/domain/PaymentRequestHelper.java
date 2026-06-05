@@ -8,12 +8,10 @@ import com.food.ordering.system.payment.service.domain.entity.Payment;
 import com.food.ordering.system.payment.service.domain.event.PaymentEvent;
 import com.food.ordering.system.payment.service.domain.exception.PaymentApplicationServiceException;
 import com.food.ordering.system.payment.service.domain.mapper.PaymentDataMapper;
-import com.food.ordering.system.payment.service.domain.ports.ouputs.message.publisher.PaymentCancelledMessagePublisher;
-import com.food.ordering.system.payment.service.domain.ports.ouputs.message.publisher.PaymentCompletedMessagePublisher;
-import com.food.ordering.system.payment.service.domain.ports.ouputs.message.publisher.PaymentFailedMessagePublisher;
 import com.food.ordering.system.payment.service.domain.ports.ouputs.repository.CreditEntryRepository;
 import com.food.ordering.system.payment.service.domain.ports.ouputs.repository.CreditHistoryRepository;
 import com.food.ordering.system.payment.service.domain.ports.ouputs.repository.PaymentRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,37 +23,17 @@ import java.util.UUID;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class PaymentRequestHelper {
     private final PaymentDomainService paymentDomainService;
     private final PaymentDataMapper paymentDataMapper;
     private final PaymentRepository paymentRepository;
     private final CreditEntryRepository creditEntryRepository;
     private final CreditHistoryRepository creditHistoryRepository;
-    private final PaymentCompletedMessagePublisher paymentCompletedMessagePublisher;
-    private final PaymentCancelledMessagePublisher paymentCancelledEventDomainEventPublisher;
-    private final PaymentFailedMessagePublisher paymentFailedMessagePublisher;
 
-    public PaymentRequestHelper(PaymentDomainService paymentDomainService,
-                                PaymentDataMapper paymentDataMapper,
-                                PaymentRepository paymentRepository,
-                                CreditEntryRepository creditEntryRepository,
-                                CreditHistoryRepository creditHistoryRepository,
-                                PaymentCompletedMessagePublisher paymentCompletedMessagePublisher,
-                                PaymentCancelledMessagePublisher paymentCancelledEventDomainEventPublisher,
-                                PaymentFailedMessagePublisher paymentFailedMessagePublisher) {
-        this.paymentDomainService = paymentDomainService;
-        this.paymentDataMapper = paymentDataMapper;
-        this.paymentRepository = paymentRepository;
-        this.creditEntryRepository = creditEntryRepository;
-        this.creditHistoryRepository = creditHistoryRepository;
-        this.paymentCompletedMessagePublisher = paymentCompletedMessagePublisher;
-        this.paymentCancelledEventDomainEventPublisher =
-                paymentCancelledEventDomainEventPublisher;
-        this.paymentFailedMessagePublisher = paymentFailedMessagePublisher;
-    }
 
     @Transactional
-    public PaymentEvent persistPayment(PaymentRequest paymentRequest) {
+    public void persistPayment(PaymentRequest paymentRequest) {
         log.info("Received payment complete event for order id: {}",
                 paymentRequest.getOrderId());
         Payment payment = paymentDataMapper.paymentRequestModelToPayment(paymentRequest);
@@ -64,9 +42,7 @@ public class PaymentRequestHelper {
 
         List<String> failureMessages = new ArrayList<>();
         PaymentEvent paymentEvent = paymentDomainService.validateAndInitiatePayment(
-                payment, creditEntry, creditHistories, failureMessages,
-                paymentCompletedMessagePublisher,
-                paymentFailedMessagePublisher);
+                payment, creditEntry, creditHistories, failureMessages);
 
         persistDbObjects(payment, creditEntry, creditHistories, failureMessages);
         return paymentEvent;
@@ -74,7 +50,7 @@ public class PaymentRequestHelper {
 
 
     @Transactional
-    public PaymentEvent persistentCancelPayment(PaymentRequest paymentRequest) {
+    public void persistentCancelPayment(PaymentRequest paymentRequest) {
         log.info("Received payment rollback event for order id: {}",
                 paymentRequest.getOrderId());
         Optional<Payment> paymentResponse =
@@ -90,8 +66,7 @@ public class PaymentRequestHelper {
         List<String> failureMessages = new ArrayList<>();
 
         PaymentEvent paymentEvent = paymentDomainService.validateAndCancelPayment(payment,
-                creditEntry, creditHistories, failureMessages,
-                paymentCancelledEventDomainEventPublisher, paymentFailedMessagePublisher);
+                creditEntry, creditHistories, failureMessages);
         persistDbObjects(payment, creditEntry, creditHistories, failureMessages);
         return paymentEvent;
     }
