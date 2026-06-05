@@ -77,28 +77,6 @@ public class OrderApprovalSaga implements SagaStep<RestaurantApprovalResponse> {
         log.info("Order with id: {} is approved", order.getId().getValue());
     }
 
-    private OrderPaymentOutboxMessage getUpdatedPaymentOutboxMessage(String sagaId,
-                                                                     OrderStatus orderStatus,
-                                                                     SagaStatus sagaStatus) {
-        Optional<OrderPaymentOutboxMessage> orderPaymentOutboxMessageResponse =
-                paymentOutboxHelper
-                        .getPaymentOutboxMessageBySagaIdAndSagaStatus(
-                                UUID.fromString(sagaId),
-                                SagaStatus.PROCESSING);
-
-        if (orderPaymentOutboxMessageResponse.isEmpty()) {
-            throw new OrderDomainException("Payment outbox message cannot be found in "
-                    + SagaStatus.PROCESSING.name() + " state");
-        }
-
-        OrderPaymentOutboxMessage orderPaymentOutboxMessage =
-                orderPaymentOutboxMessageResponse.get();
-        orderPaymentOutboxMessage.setProcessedAt(ZonedDateTime.now(ZoneId.of(UTC)));
-        orderPaymentOutboxMessage.setOrderStatus(orderStatus);
-        orderPaymentOutboxMessage.setSagaStatus(sagaStatus);
-        return orderPaymentOutboxMessage;
-    }
-
     @Override
     @Transactional
     public void rollback(RestaurantApprovalResponse restaurantApprovalResponse) {
@@ -131,6 +109,28 @@ public class OrderApprovalSaga implements SagaStep<RestaurantApprovalResponse> {
                 UUID.fromString(restaurantApprovalResponse.getSagaId()));
 
         log.info("Order with id: {} is cancelling", domainEvent.getOrder().getId().getValue());
+    }
+
+    private OrderPaymentOutboxMessage getUpdatedPaymentOutboxMessage(String sagaId,
+                                                                     OrderStatus orderStatus,
+                                                                     SagaStatus sagaStatus) {
+        Optional<OrderPaymentOutboxMessage> orderPaymentOutboxMessageResponse =
+                paymentOutboxHelper
+                        .getPaymentOutboxMessageBySagaIdAndSagaStatus(
+                                UUID.fromString(sagaId),
+                                SagaStatus.PROCESSING);
+
+        if (orderPaymentOutboxMessageResponse.isEmpty()) {
+            throw new OrderDomainException("Payment outbox message cannot be found in "
+                    + SagaStatus.PROCESSING.name() + " state");
+        }
+
+        OrderPaymentOutboxMessage orderPaymentOutboxMessage =
+                orderPaymentOutboxMessageResponse.get();
+        orderPaymentOutboxMessage.setProcessedAt(ZonedDateTime.now(ZoneId.of(UTC)));
+        orderPaymentOutboxMessage.setOrderStatus(orderStatus);
+        orderPaymentOutboxMessage.setSagaStatus(sagaStatus);
+        return orderPaymentOutboxMessage;
     }
 
     private OrderCancelledEvent rollbackOrder(RestaurantApprovalResponse restaurantApprovalResponse) {
