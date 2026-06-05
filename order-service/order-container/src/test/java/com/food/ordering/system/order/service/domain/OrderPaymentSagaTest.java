@@ -1,11 +1,14 @@
 package com.food.ordering.system.order.service.domain;
 
+import com.food.ordering.system.order.service.dataaccess.outbox.payment.entity.PaymentOutboxEntity;
 import com.food.ordering.system.order.service.dataaccess.outbox.payment.repository.PaymentOutboxJpaRepository;
 import com.food.ordering.system.order.service.domain.dto.message.PaymentResponse;
+import com.food.ordering.system.saga.SagaStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.jdbc.SqlGroup;
@@ -13,7 +16,13 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+
+import static com.food.ordering.system.saga.order.SagaConstants.ORDER_SAGA_NAME;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @SpringBootTest(classes = OrderServiceApplication.class)
@@ -42,6 +51,63 @@ public class OrderPaymentSagaTest {
     void testDoublePayment() {
         orderPaymentSaga.process(getPaymentResponse());
         orderPaymentSaga.process(getPaymentResponse());
+    }
+
+    @Test
+    void testDoublePaymentWithThreads() throws InterruptedException {
+        Thread t1 = new Thread(() -> {
+            orderPaymentSaga.process(getPaymentResponse());
+        });
+        Thread t2 = new Thread(() -> {
+            orderPaymentSaga.process(getPaymentResponse());
+        });
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+
+        assPaymentOutbox();
+    }
+
+    @Test
+    void testDoublePaymentWithLatch() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(2);
+         Thread t1 = new Thread(() -> {
+             try {
+                 orderPaymentSaga.process(getPaymentResponse());
+             } catch (OptimisticLockingFailureException e) {
+                 log.error("OptimisticLockingFailureException occurred for thread1");
+             } finally {
+                 latch.countDown();
+             }
+         });
+
+         Thread t2 = new Thread(() -> {
+             try {
+                 orderPaymentSaga.process(getPaymentResponse());
+             } catch (OptimisticLockingFailureException e) {
+                 log.error("OptimisticLockingFailureException occurred for thread2");
+             } finally {
+                 latch.countDown();
+             }
+         });
+
+         t1.start();
+         t2.start();
+
+        latch.await();
+
+        assPaymentOutbox();
+    }
+
+    private void assPaymentOutbox() {
+        Optional<PaymentOutboxEntity> paymentOutboxEntity =
+                paymentOutboxJpaRepository.findByTypeAndSagaIdAndSagaStatusIn(ORDER_SAGA_NAME,
+                        SAGA_ID, List.of(SagaStatus.PROCESSING));
+
+        assertTrue(paymentOutboxEntity.isEmpty());
     }
 
     private PaymentResponse getPaymentResponse() {
