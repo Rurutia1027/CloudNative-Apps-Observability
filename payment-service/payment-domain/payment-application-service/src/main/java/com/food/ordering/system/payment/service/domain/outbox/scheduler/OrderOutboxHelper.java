@@ -10,6 +10,7 @@ import com.food.ordering.system.payment.service.domain.outbox.model.OrderOutboxM
 import com.food.ordering.system.payment.service.domain.ports.ouputs.repository.OrderOutboxRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
@@ -23,6 +24,7 @@ import static com.food.ordering.system.saga.order.SagaConstants.ORDER_SAGA_NAME;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class OrderOutboxHelper {
     private final OrderOutboxRepository orderOutboxRepository;
     private final ObjectMapper objectMapper;
