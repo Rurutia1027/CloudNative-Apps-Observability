@@ -17,13 +17,11 @@ import java.util.stream.Collectors;
 
 @Component
 public class PaymentOutboxRepositoryImpl implements PaymentOutboxRepository {
-    private final PaymentOutboxRepository paymentOutboxRepository;
     private final PaymentOutboxDataAccessMapper paymentOutboxDataAccessMapper;
     private final PaymentOutboxJpaRepository paymentOutboxJpaRepository;
 
-    public PaymentOutboxRepositoryImpl(PaymentOutboxRepository paymentOutboxRepository,
-                                       PaymentOutboxDataAccessMapper paymentOutboxDataAccessMapper, PaymentOutboxJpaRepository paymentOutboxJpaRepository) {
-        this.paymentOutboxRepository = paymentOutboxRepository;
+    public PaymentOutboxRepositoryImpl(PaymentOutboxDataAccessMapper paymentOutboxDataAccessMapper,
+                                       PaymentOutboxJpaRepository paymentOutboxJpaRepository) {
         this.paymentOutboxDataAccessMapper = paymentOutboxDataAccessMapper;
         this.paymentOutboxJpaRepository = paymentOutboxJpaRepository;
     }

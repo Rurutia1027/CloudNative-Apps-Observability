@@ -9,26 +9,19 @@ import com.food.ordering.system.payment.service.domain.event.PaymentFailedEvent;
 import com.food.ordering.system.payment.service.domain.ports.ouputs.message.publisher.PaymentCompletedMessagePublisher;
 import com.food.ordering.system.payment.service.domain.ports.ouputs.message.publisher.PaymentFailedMessagePublisher;
 import com.food.ordering.system.payment.service.messaging.mapper.PaymentMessagingDataMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class PaymentFailedKafkaMessagePublisher implements PaymentFailedMessagePublisher {
     private final PaymentMessagingDataMapper paymentMessagingDataMapper;
     private final KafkaProducer<String, PaymentResponseAvroModel> kafkaProducer;
     private final PaymentServiceConfigData paymentServiceConfigData;
     private final KafkaMessageHelper kafkaMessageHelper;
 
-    public PaymentFailedKafkaMessagePublisher(PaymentMessagingDataMapper paymentMessagingDataMapper,
-                                              KafkaProducer<String, PaymentResponseAvroModel> kafkaProducer,
-                                              PaymentServiceConfigData paymentServiceConfigData,
-                                              KafkaMessageHelper kafkaMessageHelper) {
-        this.paymentMessagingDataMapper = paymentMessagingDataMapper;
-        this.kafkaProducer = kafkaProducer;
-        this.paymentServiceConfigData = paymentServiceConfigData;
-        this.kafkaMessageHelper = kafkaMessageHelper;
-    }
 
     @Override
     public void publish(PaymentFailedEvent domainEvent) {

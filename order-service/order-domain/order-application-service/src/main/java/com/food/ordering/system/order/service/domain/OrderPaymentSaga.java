@@ -89,7 +89,7 @@ public class OrderPaymentSaga implements SagaStep<PaymentResponse> {
                         UUID.fromString(paymentResponse.getSagaId()),
                         getCurrentSagaStatus(paymentResponse.getPaymentStatus()));
         if (orderPaymentOutboxMessageResponse.isEmpty()) {
-            log.info("An outbox message with saga id: {} is already rollbacked",
+            log.info("An outbox message with saga id: {} is already rolled back",
                     paymentResponse.getSagaId());
             return;
         }
