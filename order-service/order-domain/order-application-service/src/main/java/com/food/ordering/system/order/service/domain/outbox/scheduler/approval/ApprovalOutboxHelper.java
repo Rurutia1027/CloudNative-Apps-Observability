@@ -77,6 +77,7 @@ public class ApprovalOutboxHelper {
         save(OrderApprovalOutboxMessage.builder()
                 .id(UUID.randomUUID())
                 .sagaId(sagaId)
+                .outboxStatus(outboxStatus)
                 .createdAt(orderApprovalEventPayload.getCreatedAt())
                 .type(ORDER_SAGA_NAME)
                 .payload(createPayload(orderApprovalEventPayload))
