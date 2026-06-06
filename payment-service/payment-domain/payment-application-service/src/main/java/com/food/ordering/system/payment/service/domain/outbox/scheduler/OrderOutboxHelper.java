@@ -63,6 +63,7 @@ public class OrderOutboxHelper {
                 .processedAt(ZonedDateTime.now(ZoneId.of(UTC)))
                 .type(ORDER_SAGA_NAME)
                 .payload(createPayload(orderEventPayload))
+                .paymentStatus(paymentStatus)
                 .outboxStatus(outboxStatus)
                 .build());
     }
