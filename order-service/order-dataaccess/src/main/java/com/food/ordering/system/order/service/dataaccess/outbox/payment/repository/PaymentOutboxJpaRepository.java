@@ -19,10 +19,14 @@ public interface PaymentOutboxJpaRepository extends JpaRepository<PaymentOutboxE
                                              OutboxStatus outboxStatus,
                                              List<SagaStatus> sagaStatus);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<PaymentOutboxEntity> findByTypeAndSagaIdAndSagaStatusIn(String type,
                                                                      UUID sagaId,
                                                                      List<SagaStatus> sagaStatus);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<PaymentOutboxEntity> findByTypeAndSagaIdAndSagaStatusInForUpdate(String type,
+                                                                              UUID sagaId,
+                                                                              List<SagaStatus> sagaStatus);
 
     void deleteByTypeAndOutboxStatusAndSagaStatusIn(String type,
                                                     OutboxStatus outboxStatus,
