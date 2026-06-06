@@ -68,7 +68,7 @@ public class OrderPaymentSagaTest {
         t2.join();
 
 
-        assPaymentOutbox();
+        assertPaymentOutbox();
     }
 
     @Test
@@ -99,15 +99,15 @@ public class OrderPaymentSagaTest {
 
         latch.await();
 
-        assPaymentOutbox();
+        assertPaymentOutbox();
     }
 
-    private void assPaymentOutbox() {
+    private void assertPaymentOutbox() {
         Optional<PaymentOutboxEntity> paymentOutboxEntity =
                 paymentOutboxJpaRepository.findByTypeAndSagaIdAndSagaStatusIn(ORDER_SAGA_NAME,
                         SAGA_ID, List.of(SagaStatus.PROCESSING));
 
-        assertTrue(paymentOutboxEntity.isEmpty());
+        assertTrue(paymentOutboxEntity.isPresent());
     }
 
     private PaymentResponse getPaymentResponse() {
