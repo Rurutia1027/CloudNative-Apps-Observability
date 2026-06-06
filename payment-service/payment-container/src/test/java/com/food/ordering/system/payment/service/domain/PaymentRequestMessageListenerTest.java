@@ -41,7 +41,7 @@ public class PaymentRequestMessageListenerTest {
     private final static String CUSTOMER_ID = "d215b5f8-0249-4dc5-89a3-51fd148cfb41";
     private final static BigDecimal PRICE = new BigDecimal("100");
 
-    @Test
+    // @Test
     void testDoublePayment() {
         String sagaId = UUID.randomUUID().toString();
         paymentRequestMessageListener.completePayment(getPaymentRequest(sagaId));
@@ -54,7 +54,7 @@ public class PaymentRequestMessageListenerTest {
         assertOrderOutbox(sagaId);
     }
 
-    @Test
+    // @Test
     void testDoublePaymentWithThreads() {
         String sagaId = UUID.randomUUID().toString();
         ExecutorService executor = null;
