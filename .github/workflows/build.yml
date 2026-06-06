@@ -1,5 +1,6 @@
 # Build and test the multi-module Maven project on every push and pull request.
 # `mvn verify` runs the full lifecycle including Surefire unit tests (`**/src/test/java`).
+# Integration tests (@SpringBootTest) expect Postgres on localhost:5432 — same as local dev.
 # Avro: `kafka-model` binds `avro-maven-plugin` to `generate-sources`, which runs before
 # `compile` — same reactor as other modules, so `install` is not required for generated classes.
 
@@ -15,6 +16,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -25,6 +41,16 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
+
+      - name: Initialize database schemas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          export PGPASSWORD=admin
+          for script in infrastructure/docker-compose/postgres/init/*.sql; do
+            echo "Applying ${script}..."
+            psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f "${script}"
+          done
 
       - name: Build with Maven
         run: mvn -B -ntp verify
